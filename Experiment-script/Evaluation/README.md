@@ -1,3 +1,5 @@
+Before you move on, please read README.md in toolScripts directory. 
+
 # Fig 4: 
 You should modify line 15 in run.py. 
 ```python 

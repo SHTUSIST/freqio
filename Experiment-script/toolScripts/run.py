@@ -9,18 +9,27 @@ import sys
 
 # Define the file path
 
+# The directory you are testing.
 file_dir = "/tmp/"
-runtime = 600
+
+# Where your result is located. 
 result_dir = ""
+
+# Below are fio setting.
 rand = "" #rand
+
 timebased = 1
+runtime = 600
 file_size = "100g"
 bs="4k"
+
+# You might want to use FIO with minimal open file descriptors for simpler data management. 
 minimal = False
-# only spdk should be 0. 
-fdatasync_dict={"mmap": "1", "spdk": "0", "libaio": "1", "posixaio":"1", "sync":"1", "psync":"1", "io_uring":"1", "sync2": "1", "io_uring2": "1", "psync": "1"}
-# only libaio should be 1. 
-direct_dict = {"mmap": "0", "spdk": "0", "libaio": "1", "posixaio":"0", "sync":"0", "psync":"0", "io_uring":"0", "sync2": "1", "io_uring2": "0", "psync": "0"}
+
+# ioengine this script support. sync2: direct I/O, io_uring2: io_uring with sqpoll=1
+fdatasync_dict={"mmap": "1", "libaio": "1", "posixaio":"1", "sync":"1", "psync":"1", "io_uring":"1", "sync2": "1", "io_uring2": "1", "psync": "1"}
+
+direct_dict = {"mmap": "0", "libaio": "1", "posixaio":"0", "sync":"0", "psync":"0", "io_uring":"0", "sync2": "1", "io_uring2": "0", "psync": "0"}
 
 
 def run_fio(mix_proportion, io_engine, io_depth, sys_type, numjobs:int = 1):
@@ -110,11 +119,11 @@ def run_fio(mix_proportion, io_engine, io_depth, sys_type, numjobs:int = 1):
             out.write(fio_cmd + " ")
 
 if __name__ == "__main__":
-    # Define the proportions to test
-    proportions = [0] #  i for i in range(0, 101, 20)  # 0, 100 , 100
-    # proportions.append(95)
-    #, "io_uring", "io_uring2", "sync"
-    io_engine_list = ["sync"] #    , "sync2", "io_uring", "posixaio", "libaio", "mmap"
+    # Define the read proportions to test
+    proportions = [0] 
+    
+    # The io_engine you are going to test. 
+    io_engine_list = ["sync"] 
     result_dir = datetime.datetime.now().strftime('%m%d-%H%M')
     
     if not os.path.exists(result_dir):
@@ -129,10 +138,10 @@ if __name__ == "__main__":
             os.system("cpufreq-info -c 0")
         elif sys_type.endswith("-i"):
             os.system("bash ./set_passive.sh active")
-            os.system("bash ./set_freq.sh " + sys_type[:-2])
+            os.system("bash ./set_governor.sh " + sys_type[:-2])
         else:
             os.system("bash ./set_passive.sh passive")
-            os.system("bash ./set_freq.sh " + sys_type)
+            os.system("bash ./set_governor.sh " + sys_type)
         for numjob in numjob_list:
             for io_engine in io_engine_list:
                 for proportion in proportions:

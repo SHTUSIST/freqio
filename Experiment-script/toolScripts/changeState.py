@@ -1,8 +1,7 @@
 import argparse
 import os 
-import subprocess
 
-governor_setting_path = "./set_freq.sh"
+governor_setting_path = "./set_govoernor.sh"
 passive_setting_path = "./set_passive.sh"
 
 if __name__ == "__main__":

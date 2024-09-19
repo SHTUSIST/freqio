@@ -1,9 +1,8 @@
 #!/bin/bash
-
-
 # This script output the iowait and frequency by sampling. 
 prev_iowait=0
 
+# You can use option -p to change the core monitored. 
 max_freq=16#$(sudo rdmsr --bitfield 15:8 0x000000ce)
 cur_iowait=$(awk '/cpu0/ {print $6}' /proc/stat)
 
